@@ -22,9 +22,12 @@ public:
 	static char tetrominos[maxTetrominos][blockSize][blockSize];
 	static char getTetromino(int tetroID, int row, int col) { return tetrominos[tetroID][row][col]; }
 
-	char getBoard(int x, int y) { return mBoard[y][x]; }
+	char getBoard(int col, int row) { return mBoard[row][col]; }
 	void editBoard(int colBoard, int rowBoard, char c) { mBoard[rowBoard][colBoard] = c; }
 	void close();
+
+	void deleteLine(int boardY);
+	void deletePossibleLines();
 
 	// Debug
 	void displayBoard();

@@ -142,24 +142,30 @@ void Board::displayBoard()
 	}
 }
 
-//bool Board::isCollide(int TetrominoID, int rotation, int posX, int posY)
-//{
-//	for (int pX = 0; pX < Blocks::blockSize; pX++)
-//	{
-//		for (int pY = 0; pY < Blocks::blockSize; pY++)
-//		{
-//			int piece = blocks.rotate(pX, pY, rotation);
-//
-//			int board = (posX + pY) * Board::boardWidth + (posX + pX);
-//
-//			// Bounds checking
-//			if (posX + pX >= 0 && posX + pX < Board::boardWidth)
-//			{
-//				if (posY + pY >= 0 && posY + pY < Board::boardHeight)
-//				{
-//					if (blocks.tetromino[TetrominoID][piece] == 'X' && mBoard[board] != 0)
-//				}
-//			}
-//		}
-//	}
-//}
+void Board::deleteLine(int boardY)
+{
+	char temp{ '.' };
+	for (int row = boardY; row > 0; row--)
+	{
+		for (int col = 0; col < boardWidth; col++)
+		{
+			mBoard[row][col] = mBoard[row - 1][col];
+		}
+	}
+}
+
+void Board::deletePossibleLines()
+{
+	for (int row = 0; row < boardHeight; row++)
+	{
+		int col = 0;
+		while (col < boardWidth)
+		{
+			if (mBoard[row][col] == '.')
+				break;
+			col++;
+		}
+		if (col == boardWidth)
+			deleteLine(row);
+	}
+}

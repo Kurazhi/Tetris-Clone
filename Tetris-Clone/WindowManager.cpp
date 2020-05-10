@@ -53,7 +53,7 @@ void WindowManager::run()
 				game->handleEvent(event);
 			}
 		}
-
+		game->gravityTime();
 		game->render();
 	}
 }

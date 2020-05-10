@@ -18,13 +18,24 @@ public:
 	void placeCurrentBlock(int moveX = 0, int moveY = 0);
 	void removeCurrentBlock();
 	void rotateCurrentBlock();
-
-	int mPosX, mPosY;
+	void gravityTime();
+	void createNewBlock();
+	
+	
 	Board mBoard;
+	static unsigned long delayGravity;
 private:
+	// Current Block data
+	int mPosX, mPosY;
 	char currentBlock[Board::blockSize][Board::blockSize];
 	int currentBlockID;
+
+	// Next Block Date
 	int nextPosX, nextPosY;
+	char nextBlock[Board::blockSize][Board::blockSize];
+	int nextBlockID;
+
+	unsigned long start, end;
 	
 };
 

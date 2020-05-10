@@ -4,6 +4,7 @@
 #include <iostream>
 #include <ctime>
 
+unsigned long Game::delayGravity = 1000;
 
 void Game::init()
 {
@@ -18,7 +19,10 @@ void Game::init()
 		}
 	}
 	spawnBlock();
+	createNewBlock();
 	placeCurrentBlock();
+	start = SDL_GetTicks();
+	
 }
 Game::Game()
 {
@@ -76,6 +80,9 @@ void Game::handleEvent(SDL_Event& e)
 				rotateCurrentBlock();
 			placeCurrentBlock();
 			break;
+		case SDLK_c:
+			mBoard.displayBoard();
+			break;
 		}
 	}
 }
@@ -100,13 +107,11 @@ bool Game::isCollide()
 				{	
 					return true;
 				}
-				else if (mPosX >= 0 && mPosY >= 0)
+				else if (mBoard.getBoard(rowBoard, colBoard) != '.')
 				{
-					if (mBoard.getBoard(mPosX, mPosY) != '.')
-						return true;
+					return true;
 				}
 			}
-			
 		}
 	}
 	return false;
@@ -114,12 +119,12 @@ bool Game::isCollide()
 void Game::spawnBlock()
 {
 	std::cout << "Spawning block ID" << std::endl;
-	currentBlockID = (rand() % 7);
+	nextBlockID = (rand() % 7);
 	for (int row = 0; row < Board::blockSize; row++)
 	{
 		for (int col = 0; col < Board::blockSize; col++)
 		{
-			currentBlock[row][col] = mBoard.getTetromino(currentBlockID, row, col);
+			nextBlock[row][col] = mBoard.getTetromino(nextBlockID, row, col);
 		}
 	}
 }
@@ -162,4 +167,43 @@ void Game::rotateCurrentBlock()
 			currentBlock[Board::blockSize - 1 - col][row] = temp;
 		}
 	}
+}
+
+void Game::gravityTime()
+{
+	end = SDL_GetTicks();
+	if (end - start > delayGravity)
+	{
+		removeCurrentBlock();
+		mPosY++;
+		if (isCollide())
+		{
+			mPosY--;
+			placeCurrentBlock(mPosX, mPosY);
+			createNewBlock();
+			mBoard.deletePossibleLines();
+		}
+		else
+		{
+			placeCurrentBlock(mPosX, mPosY);
+			
+		}
+		start = SDL_GetTicks();
+	}
+	
+}
+void Game::createNewBlock()
+{
+	currentBlockID = nextBlockID;
+	mPosX = 4;
+	mPosY = 0;
+	for (int row = 0; row < Board::blockSize; row++)
+	{
+		for (int col = 0; col < Board::blockSize; col++)
+		{
+			currentBlock[row][col] = nextBlock[row][col];
+		}
+	}
+
+	spawnBlock();
 }
